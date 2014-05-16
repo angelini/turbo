@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "TurboModules inspector",
-  "description": "TurboModules inspector"
+  "name": "TurboModules Inspector",
+  "description": "TurboModules Inspector",
   "version": "0.1",
 
   "permissions": [

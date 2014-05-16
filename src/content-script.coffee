@@ -1,7 +1,7 @@
 window.addEventListener 'message', (event) ->
   if event.data.for is 'turbo'
     msg = {id: event.data.id, data: JSON.parse(event.data.data), options: event.data.options}
-    chrome.extension.sendMessage(msg)
+    chrome.runtime.sendMessage(msg)
 
-chrome.extension.onMessage.addListener (msg, sender) ->
-  window.postMessage {for: 'turbo.inspector', id: msg.id, data: msg.data, options: msg.options}, '*'
+chrome.runtime.onMessage.addListener (msg, sender) ->
+  window.postMessage({for: 'turbo.inspector', id: msg.id, data: msg.data, options: msg.options}, '*')

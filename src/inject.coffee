@@ -2,13 +2,9 @@ Turbo.injectDebugger = (cb) ->
   chrome.devtools.network.onNavigated.addListener ->
     window.location.reload()
 
-  js = for url in ['dist/inspector.js']
-    xhr = new XMLHttpRequest()
-    xhr.open('GET', chrome.extension.getURL(url), false)
-    xhr.send()
-    xhr.responseText
+  req = $.get(chrome.extension.getURL('dist/inspector.js'))
+  req.done (script) ->
+    chrome.devtools.inspectedWindow.eval(script, cb)
 
-  chrome.devtools.inspectedWindow.eval(js.join(';\n'), cb)
-
-jQuery ->
-  Turbo.injectDebugger -> Turbo.start()
+$ ->
+  Turbo.injectDebugger -> Turbo.App.start()

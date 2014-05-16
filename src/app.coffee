@@ -4,7 +4,7 @@ class Turbo.App
     messageId = 0
     callbackFunctions = {}
 
-    port = chrome.extension.connect(name: "#{chrome.devtools.inspectedWindow.tabId}")
+    port = chrome.runtime.connect(name: "#{chrome.devtools.inspectedWindow.tabId}")
 
     port.onMessage.addListener (msg) ->
       if cb = callbackFunctions[msg.id]
@@ -17,5 +17,6 @@ class Turbo.App
       callbackFunctions[id] = cb
       port.postMessage(data: msg, id: id)
 
-  start: ->
-    console.log 'Started'
+  @start: ->
+    Turbo.App.sendMessage type: 'ping', ->
+      console.log('response', arguments)

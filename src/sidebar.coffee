@@ -7,7 +7,7 @@ class Turbo.Sidebar
 
   update: (sidebar) ->
     fnDef = @info.toString()
-    sidebar.setExpression '(' + fnDef + ')()'
+    sidebar.setExpression('(' + fnDef + ')()')
 
   info: ->
     try

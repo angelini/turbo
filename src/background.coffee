@@ -1,6 +1,7 @@
-chrome.extension.onConnect.addListener (port) ->
+chrome.runtime.onConnect.addListener (port) ->
   port.onMessage.addListener (msg) ->
     chrome.tabs.sendMessage(parseInt(port.name, 10), msg)
 
-  chrome.extension.onMessage.addListener (msg, sender) ->
+  chrome.runtime.onMessage.addListener (msg, sender) ->
+    console.log('last', msg, sender)
     port.postMessage(msg)
