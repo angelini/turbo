@@ -1,3 +1,6 @@
+log = (m...)->
+  console.log(['[app]'].concat(m)...)
+
 class Turbo.App
 
   @sendMessage: do =>
@@ -7,9 +10,14 @@ class Turbo.App
     port = chrome.runtime.connect(name: "#{chrome.devtools.inspectedWindow.tabId}")
 
     port.onMessage.addListener (msg) ->
+      log('message', msg)
       if cb = callbackFunctions[msg.id]
         cb(msg.data)
         delete callbackFunctions[msg.id] if msg.options.close
+
+    port.onDisconnect.addListener ->
+      log('disconnect')
+      callbackFunctions = {}
 
     (msg, cb) =>
       id = messageId++
@@ -18,5 +26,5 @@ class Turbo.App
       port.postMessage(data: msg, id: id)
 
   @start: ->
-    Turbo.App.sendMessage type: 'ping', ->
-      console.log('response', arguments)
+    Turbo.App.sendMessage type: 'ping', (res) ->
+      log('response', res)
