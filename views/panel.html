@@ -3,17 +3,41 @@
   <head>
     <meta charset="utf-8">
 
+    <link rel="stylesheet" type="text/css" href="../vendor/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../dist/main.css">
 
     <script src="../vendor/underscore.js"></script>
     <script src="../vendor/jquery.js"></script>
+    <script src="../vendor/bootstrap.js"></script>
 
     <script src="../dist/namespace.js"></script>
-    <script src="../dist/app.js"></script>
+    <script src="../dist/app/messenger.js"></script>
+    <script src="../dist/app/bindings.js"></script>
+    <script src="../dist/app/contexts.js"></script>
+    <script src="../dist/app/app.js"></script>
 
     <script src="../dist/inject.js"></script>
   </head>
+
   <body>
-    <span>Hello World</span>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="sidebar col-sm-2">
+          <h1>Turbo</h1>
+          <ul class="nav nav-stacked">
+            <li data-section="bindings"><a href="#">Bindings</a></li>
+            <li data-section="contexts"><a href="#">Contexts</a></li>
+          </ul>
+        </div>
+
+        <div class="content col-sm-10">
+          <header>
+            <h1>Header</h1>
+          </header>
+          <div>
+            <p>Hello World</p>
+          </div>
+        </div>
+      </div>
   </body>
 </html>

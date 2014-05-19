@@ -1,5 +1,6 @@
-Turbo.injectDebugger = (cb) ->
+Turbo.injectInspector = (cb) ->
   chrome.devtools.network.onNavigated.addListener ->
+    Turbo.App.stop()
     window.location.reload()
 
   req = $.get(chrome.extension.getURL('dist/inspector.js'))
@@ -7,4 +8,4 @@ Turbo.injectDebugger = (cb) ->
     chrome.devtools.inspectedWindow.eval(script, cb)
 
 $ ->
-  Turbo.injectDebugger -> Turbo.App.start()
+  Turbo.injectInspector -> Turbo.App.start()
