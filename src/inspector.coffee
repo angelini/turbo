@@ -20,6 +20,8 @@ class TurboInspector
     switch msg.type
       when 'ping'
         cb(type: 'pong')
+      when 'bindings:init'
+        cb(count: _.size(Bindings._elements))
       else
         console.log('Unknown message', msg)
 

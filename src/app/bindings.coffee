@@ -1,15 +1,20 @@
 class Turbo.Bindings
 
   @init: ($content) ->
-    instance = new Turbo.Bindings()
-    instance.render($content)
-
     Turbo.App.log('bindings:init')
-    Turbo.App.sendMessage type: 'ping', (res) ->
-      Turbo.App.log('response', res)
 
-  render: ($content) ->
-    $content.html(TEMPLATES.root)
+    instance = new Turbo.Bindings($content)
+    instance.render()
+
+  constructor: (@$node) ->
+    @count = 0
+
+    Turbo.App.sendMessage type: 'bindings:init', (res) =>
+      @count = res.count
+      @render()
+
+  render: () ->
+    @$node.html(_.template(TEMPLATES.root, count: @count))
 
 TEMPLATES =
   root: """
@@ -17,6 +22,6 @@ TEMPLATES =
       <h1>Bindings</h1>
     </header>
     <div>
-      <p>Hello World</p>
+      <div>Binding Count: <%= count %></div>
     </div>
   """

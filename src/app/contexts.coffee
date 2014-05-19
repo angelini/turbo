@@ -1,11 +1,14 @@
 class Turbo.Contexts
 
   @init: ($content) ->
-    instance = new Turbo.Contexts()
-    instance.render($content)
+    instance = new Turbo.Contexts($content)
+    instance.render()
 
-  render: ($content) ->
-    $content.html(TEMPLATES.root)
+  constructor: (@$node) ->
+    Turbo.App.log('contexts:init')
+
+  render: () ->
+    @$node.html(TEMPLATES.root)
 
 TEMPLATES =
   root: """
