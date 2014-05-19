@@ -16,6 +16,17 @@ class Turbo.Contexts
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))
 
+    new InspectorJSON({
+      element: @$node.find('.context-json')[0]
+      json: data.context
+    })
+
+    if data.current
+      new InspectorJSON({
+        element: @$node.find('.current-json')[0]
+        json: data.current
+      })
+
 TEMPLATES =
   root: """
     <header>
@@ -33,10 +44,10 @@ TEMPLATES =
 
       <% if (current) { %>
         <h3>Current</h3>
-        <pre><%= JSON.stringify(current) %></pre>
+        <div class="current-json"></div>
       <% } %>
 
       <h3>Context</h3>
-      <pre><%= JSON.stringify(context) %></pre>
+      <div class="context-json"></div>
     </div>
   """
