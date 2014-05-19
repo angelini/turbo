@@ -2,20 +2,19 @@ class Turbo.Contexts
 
   @init: ($content) ->
     Turbo.App.log('contexts:init')
-
     instance = new Turbo.Contexts($content)
-    instance.render()
+    instance.fetch(instance.render.bind(instance))
 
   constructor: (@$node) ->
-    @root = {}
+    chrome.devtools.panels.elements.onSelectionChanged.addListener =>
+      @fetch(@render.bind(this))
 
-    Turbo.App.sendMessage type: 'contexts:init', (res) =>
-      @root = res.context
-      @render()
+  fetch: (cb) ->
+    Turbo.App.sendMessage type: 'contexts', ({current, context, keypaths}) ->
+      cb({current, context, keypaths})
 
-  render: ->
-    console.log(JSON.stringify(@root))
-    @$node.html(_.template(TEMPLATES.root, root: @root))
+  render: (data) ->
+    @$node.html(_.template(TEMPLATES.root, data))
 
 TEMPLATES =
   root: """
@@ -23,6 +22,21 @@ TEMPLATES =
       <h1>Contexts</h1>
     </header>
     <div>
-      <pre><%= JSON.stringify(root) %></pre>
+      <% if (keypaths && keypaths.length) { %>
+        <h3>Keypaths</h3>
+        <ol class="breadcrumb">
+          <% _.each(keypaths, function(keypath) { %>
+            <li><%= keypath %></li>
+          <% }) %>
+        </ol>
+      <% } %>
+
+      <% if (current) { %>
+        <h3>Current</h3>
+        <pre><%= JSON.stringify(current) %></pre>
+      <% } %>
+
+      <h3>Context</h3>
+      <pre><%= JSON.stringify(context) %></pre>
     </div>
   """
