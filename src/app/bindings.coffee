@@ -13,7 +13,7 @@ class Turbo.Bindings
       @count = res.count
       @render()
 
-  render: () ->
+  render: ->
     @$node.html(_.template(TEMPLATES.root, count: @count))
 
 TEMPLATES =

@@ -1,14 +1,21 @@
 class Turbo.Contexts
 
   @init: ($content) ->
+    Turbo.App.log('contexts:init')
+
     instance = new Turbo.Contexts($content)
     instance.render()
 
   constructor: (@$node) ->
-    Turbo.App.log('contexts:init')
+    @root = {}
 
-  render: () ->
-    @$node.html(TEMPLATES.root)
+    Turbo.App.sendMessage type: 'contexts:init', (res) =>
+      @root = res.context
+      @render()
+
+  render: ->
+    console.log(JSON.stringify(@root))
+    @$node.html(_.template(TEMPLATES.root, root: @root))
 
 TEMPLATES =
   root: """
@@ -16,6 +23,6 @@ TEMPLATES =
       <h1>Contexts</h1>
     </header>
     <div>
-      <p>Hello World</p>
+      <pre><%= JSON.stringify(root) %></pre>
     </div>
   """

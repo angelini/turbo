@@ -6,7 +6,7 @@ bindingsCount = ->
 
 class TurboInspector
 
-  init: ->
+  constructor: ->
     window.addEventListener 'message', messageListener = (event) =>
       if event.data.for is 'turbo.inspector'
         log('message', event.data)
@@ -25,9 +25,9 @@ class TurboInspector
         cb(type: 'pong')
       when 'bindings:init'
         cb(count: bindingsCount())
+      when 'contexts:init'
+        cb(context: window.context)
       else
         console.log('Unknown message', msg)
 
-window.TurboInspector = TurboInspector
-window._inspector = new TurboInspector()
-window._inspector.init()
+window.inspector = new TurboInspector()
