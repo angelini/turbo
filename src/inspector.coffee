@@ -1,6 +1,9 @@
 log = (m...) ->
   console.log(['[inspector]'].concat(m)...)
 
+bindingsCount = ->
+  _.reduce(Bindings._elements, ((count, e) -> count + _.size(e.bindings)), 0)
+
 class TurboInspector
 
   init: ->
@@ -21,7 +24,7 @@ class TurboInspector
       when 'ping'
         cb(type: 'pong')
       when 'bindings:init'
-        cb(count: _.size(Bindings._elements))
+        cb(count: bindingsCount())
       else
         console.log('Unknown message', msg)
 
