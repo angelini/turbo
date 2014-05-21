@@ -10,8 +10,8 @@ class Turbo.Contexts
       @fetch(@render.bind(this))
 
   fetch: (cb) ->
-    Turbo.App.sendMessage type: 'contexts', ({current, context, keypaths}) ->
-      cb({current, context, keypaths})
+    Turbo.App.sendMessage type: 'contexts', ({current, context, keypath}) ->
+      cb({current, context, keypath})
 
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))
@@ -33,13 +33,9 @@ TEMPLATES =
       <h1>Contexts</h1>
     </header>
     <div>
-      <% if (keypaths && keypaths.length) { %>
+      <% if (keypath) { %>
         <h3>Keypaths</h3>
-        <ol class="breadcrumb">
-          <% _.each(keypaths, function(keypath) { %>
-            <li><%= keypath %></li>
-          <% }) %>
-        </ol>
+        <div><%= keypath %></div>
       <% } %>
 
       <% if (current) { %>

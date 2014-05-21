@@ -4,16 +4,30 @@ log = (m...) ->
 bindingsCount = ->
   _.reduce(Bindings._elements, ((count, e) -> count + _.size(e.bindings)), 0)
 
-keypathList = (node) ->
-  keypaths = []
+boundElements = ->
+  elements = {}
 
-  while node && node != document
-    if key = node.getAttribute('context')
-      keypaths.unshift(key)
+  for element in document.getElementsByTagName("*")
+    if (id = element.bindingId) && (definition = Bindings._elements[id])
+      keypath = Bindings._keypathForKey(Bindings.contextKey(element))
+      context = Bindings._getValue(Bindings._rootContext, keypath)
 
-    node = node.parentNode
+      bindings = []
+      for type of Bindings.bindingTypes when definition = element.getAttribute(type)
+        bindings.push({type, definition})
 
-  return keypaths
+      continue unless bindings.length
+
+      elements[id] =
+        context: context
+        bindings: bindings
+        node:
+          id: element.id
+          className: element.className
+          type: element.nodeName.toLowerCase()
+
+  return elements
+
 
 class TurboInspector
 
@@ -36,7 +50,11 @@ class TurboInspector
         cb(type: 'pong')
 
       when 'bindings'
-        cb(count: bindingsCount())
+        result =
+          count: bindingsCount()
+          elements: boundElements()
+
+        cb(result)
 
       when 'contexts'
         result = context: window.context
@@ -44,7 +62,7 @@ class TurboInspector
         if $0
           _.extend result,
             current: Bindings.context($0)
-            keypaths: keypathList($0)
+            keypath: Bindings.contextKey($0)
 
         cb(result)
 
