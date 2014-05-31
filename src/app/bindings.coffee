@@ -21,42 +21,45 @@ testFilter = (filter, val) ->
   val.indexOf(filter) >= 0
 
 
-class Turbo.Bindings
+class Turbo.Bindings extends Turbo.View
 
   @init: ($content) ->
     Turbo.App.log('bindings:init')
     instance = new Turbo.Bindings($content)
-    instance.fetch(instance.render.bind(instance))
+    instance.fetch()
 
   constructor: (@$node) ->
-    @cache = {}
+    super
     @filters = {}
 
     @$node.on 'keyup', '.js-node', @updateFilter.bind(this, 'node')
     @$node.on 'keyup', '.js-type', @updateFilter.bind(this, 'type')
 
+    @addSubRender('filtered', @renderList.bind(this))
+
   updateFilter: (filter) ->
     @filters[filter] = @$node.find(".js-#{filter}").val()
-    @renderList(@cache.bindings)
+    @setSubValue('filtered', applyFilters(@getValue()['bindings'])
 
-  fetch: (cb) ->
-    Turbo.App.sendMessage type: 'bindings', ({count, elements}) =>
-      bindings = _.reduce(elements, extractBindings, [])
-      cb(@cache = {count, bindings})
-
-  render: (data) ->
-    @$node.html(_.template(TEMPLATES.root, data))
-    @renderList(data.bindings)
-
-  renderList: (bindings) ->
-    $table = @$node.find('table')
-    emptyTable($table)
-
-    filtered = _.filter bindings, (binding) =>
+  applyFilters: (bindings) ->
+    _.filter bindings, (binding) =>
       return false if !testFilter(@filters.node, binding.node)
       return false if !testFilter(@filters.type, binding.type)
       return true
 
+  fetch: ->
+    Turbo.App.sendMessage type: 'bindings', ({count, elements}) =>
+      bindings = _.reduce(elements, extractBindings, [])
+      filtered = applyFilters(bindings)
+      @setValue({count, bindings, filtered})
+
+  render: (data) ->
+    @$node.html(_.template(TEMPLATES.root, data))
+    @renderList(data.filtered)
+
+  renderList: (filtered) ->
+    $table = @$node.find('table')
+    emptyTable($table)
     $table.append(_.template(TEMPLATES.list, bindings: filtered))
 
 

@@ -53,17 +53,15 @@ class TurboInspector
         result =
           count: bindingsCount()
           elements: boundElements()
-
         cb(result)
 
-      when 'contexts'
-        result = context: window.context
+      when 'context'
+        cb(context: window.context)
 
-        if $0
-          _.extend result,
-            current: Bindings.context($0)
-            keypath: Bindings.contextKey($0)
-
+      when 'current-context'
+        result =
+          context: Bindings.context($0)
+          keypath: Bindings.contextKey($0)
         cb(result)
 
       else
