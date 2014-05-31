@@ -1,6 +1,7 @@
 log = (m...)->
   console.log(['[app]'].concat(m)...)
 
+
 class Turbo.App
 
   @start: ->

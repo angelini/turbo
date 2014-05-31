@@ -27,6 +27,7 @@ class Turbo.Contexts
         json: data.current
       })
 
+
 TEMPLATES =
   root: """
     <header>

@@ -11,7 +11,6 @@ extractBindings = (acc, element) ->
       type: binding.type
       definition: binding.definition
     acc.push(result)
-
   return acc
 
 emptyTable = ($table) ->
@@ -20,6 +19,7 @@ emptyTable = ($table) ->
 testFilter = (filter, val) ->
   return true if !filter
   val.indexOf(filter) >= 0
+
 
 class Turbo.Bindings
 
@@ -58,6 +58,7 @@ class Turbo.Bindings
       return true
 
     $table.append(_.template(TEMPLATES.list, bindings: filtered))
+
 
 TEMPLATES =
   root: """

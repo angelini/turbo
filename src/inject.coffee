@@ -3,7 +3,7 @@ Turbo.injectInspector = (cb) ->
     Turbo.App.stop()
     window.location.reload()
 
-  underscore = $.get(chrome.extension.getURL('vendor/underscore.js'))
+  underscore = $.get(chrome.extension.getURL('bower_components/underscore/underscore.js'))
   inspector = $.get(chrome.extension.getURL('dist/inspector.js'))
 
   $.when(underscore, inspector).done (underscoreRes, inspectorRes) ->
