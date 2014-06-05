@@ -16,6 +16,12 @@ class Turbo.App
   @sendMessage: (msg, cb) ->
     Turbo.instance.messenger.send(msg, cb)
 
+  @on: (msg, cb) ->
+    Turbo.instance.messenger.on(msg, cb)
+
+  @off: (msg, cb) ->
+    Turbo.instance.messenger.off(msg, cb)
+
   @onSelectionChange: (cb) ->
     Turbo.instance.messenger.onSelectionChange(cb)
 

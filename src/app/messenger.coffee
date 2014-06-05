@@ -5,20 +5,37 @@ class Turbo.Messenger
 
   constructor: (tabId) ->
     @messageId = 0
-    @callbackFunctions = {}
+    @handlers = {}
 
     @port = chrome.runtime.connect(name: "#{tabId}")
 
     @port.onMessage.addListener (msg) =>
       Turbo.App.log('message', msg)
 
-      if cb = @callbackFunctions[msg.id]
-        cb(msg.data)
-        delete @callbackFunctions[msg.id]
+      if handler = @handlers[msg.id]
+        handler.fn(msg.data)
+        delete @handlers[msg.id] if !handler.keepAlive
 
   send: (msg, cb) ->
+    @_send(msg, cb, false)
+
+  on: (msg, cb) ->
+    @_send(msg, cb, true)
+
+  off: (msg, cb) ->
+    toRemove = []
+
+    for id, handler of @handlers
+      if handler.msg == msg
+        if !cb || cb == handler.fn
+          delete @handlers[id]
+          toRemove.push(id)
+
+    @send({type: 'off', ids: toRemove})
+
+  _send: (msg, cb, keepAlive) ->
     id = @messageId++
-    @callbackFunctions[id] = cb || ->
+    @handlers[id] = {msg, keepAlive, fn: cb || ->}
     @port.postMessage(data: msg, id: id)
 
   disconnect: ->

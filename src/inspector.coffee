@@ -38,6 +38,8 @@ boundElements = ->
 class TurboInspector
 
   constructor: ->
+    @handlers = {}
+
     window.addEventListener 'message', messageListener = (event) =>
       return if event.data.for != 'turbo.inspector'
       log('message', event.data)
@@ -46,14 +48,21 @@ class TurboInspector
         window.removeEventListener(messageListener)
         return
 
-      @handleMessage event.data.data, (res, options = {}) =>
+      @handleMessage event.data.id, event.data.data, (res, options = {}) =>
         data = JSON.stringify(res)
         window.postMessage({id: event.data.id, for: 'turbo', data, options}, '*')
 
-  handleMessage: (msg, cb) ->
+  handleMessage: (id, msg, cb) ->
     switch msg.type
       when 'ping'
         cb(type: 'pong')
+
+      when 'constant-ping'
+        interval = setInterval ->
+          cb(type: 'pong')
+        , 1000
+
+        handlers[id] = -> clearInterval(interval)
 
       when 'bindings'
         cb(elements: boundElements())
@@ -66,6 +75,11 @@ class TurboInspector
           context: Bindings.context($0)
           keypath: Bindings.contextKey($0)
         cb(result)
+
+      when 'off'
+        for id in msg.ids
+          @handlers[id]()
+          delete @handlers[id]
 
       else
         log('Unknown message', msg)
