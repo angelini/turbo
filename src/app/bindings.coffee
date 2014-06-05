@@ -13,9 +13,6 @@ extractBindings = (acc, element) ->
     acc.push(result)
   return acc
 
-emptyTable = ($table) ->
-  $table.find('tr').slice(1).remove()
-
 testFilter = (filter, val) ->
   return true if !filter
   val.indexOf(filter) >= 0
@@ -34,6 +31,8 @@ class Turbo.Bindings extends Turbo.View
 
     @$node.on 'keyup', '.js-node', @updateFilter.bind(this, 'node')
     @$node.on 'keyup', '.js-type', @updateFilter.bind(this, 'type')
+    @$node.on 'keyup', '.js-definition', @updateFilter.bind(this, 'definition')
+    @$node.on 'keyup', '.js-value', @updateFilter.bind(this, 'value')
 
     @addSubRender('filtered', @renderList.bind(this))
 
@@ -45,6 +44,8 @@ class Turbo.Bindings extends Turbo.View
     _.filter bindings, (binding) =>
       return false if !testFilter(@filters.node, binding.node)
       return false if !testFilter(@filters.type, binding.type)
+      return false if !testFilter(@filters.definition, binding.definition)
+      return false if !testFilter(@filters.value, binding.value)
       return true
 
   fetch: ->
@@ -58,9 +59,8 @@ class Turbo.Bindings extends Turbo.View
     @renderList(data.filtered)
 
   renderList: (filtered) ->
-    $table = @$node.find('table')
-    emptyTable($table)
-    $table.append(_.template(TEMPLATES.list, bindings: filtered))
+    $tbody = @$node.find('tbody')
+    $tbody.html(_.template(TEMPLATES.list, bindings: filtered))
 
 
 TEMPLATES =
@@ -71,25 +71,24 @@ TEMPLATES =
     <div>
       <div>Binding Count: <%= bindings.length %></div>
 
-      <table class="table">
-        <tr>
-          <th>
-            <label>Node</label>
-            <input class="js-node" type="text">
-          </th>
-          <th>
-            <label>Type</label>
-            <input class="js-type" type="text">
-          </th>
-          <th>
-            <label>Definition</label>
-            <input class="js-definition" type="text">
-          </th>
-          <th>
-            <label>Value</label>
-            <input class="js-value" type="text">
-          </th>
-        </tr>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              <input class="js-node" type="text" placeholder="Node">
+            </th>
+            <th>
+              <input class="js-type" type="text" placeholder="Type">
+            </th>
+            <th>
+              <input class="js-definition" type="text" placeholder="Definition">
+            </th>
+            <th>
+              <input class="js-value" type="text" placeholder="Value">
+            </th>
+          </tr>
+        </thead>
+        <tbody class="striped"></tbody>
       </table>
     </div>
   """

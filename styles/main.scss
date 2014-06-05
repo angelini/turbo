@@ -1,0 +1,94 @@
+$black: rgb(48, 57, 66);
+$blue: rgb(56, 121, 217);
+
+$gray: rgb(232, 232, 232);
+$light-gray: rgb(64%, 64%, 64%);
+
+body {
+  color: $black;
+  font-family: 'Lucida Grande', sans-serif;
+  font-size: 12px;
+}
+
+html, body, .viewport {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.hbox {
+  display: flex;
+  flex-direction: row;
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+}
+
+.sidebar {
+  flex-basis: 200px;
+  background-color: $gray;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-right: 1px solid $light-gray;
+
+  .sidebar-item {
+    height: 18px;
+    padding: 6px 10px 6px 10px;
+    margin-top: 1px;
+    text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+
+    a {
+      color: $black;
+      text-decoration: none;
+    }
+  }
+
+  .selected {
+    color: white;
+    text-shadow: rgba(0, 0, 0, 0.33) 1px 1px 0;
+    background-color: rgb(56, 121, 217);
+    background-origin: padding-box;
+    background-clip: padding-box;
+
+    a {
+      color: white;
+    }
+  }
+}
+
+.content {
+  padding: 0px 15px;
+}
+
+h1 {
+  color: rgb(110, 116, 128);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: normal;
+  margin-top: 0;
+}
+
+header {
+  margin-top: 7px;
+}
+
+table {
+  border-collapse: collapse;
+
+  td, th {
+    border: 1px solid $light-gray;
+    padding: 0.5rem;
+    text-align: left;
+  }
+}
+
+tbody.striped tr:nth-child(odd) {
+   background-color: #ccc;
+}

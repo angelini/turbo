@@ -33,8 +33,8 @@ class Turbo.App
       @navigate(section)
 
   navigate: (section) ->
-    @$sidebar.find('li.active').removeClass('active')
-    @$sidebar.find("li[data-section=\"#{section}\"]").addClass('active')
+    @$sidebar.find('li.selected').removeClass('selected')
+    @$sidebar.find("li[data-section=\"#{section}\"]").addClass('selected')
 
     switch section
       when 'bindings' then Turbo.Bindings.init(@$content)

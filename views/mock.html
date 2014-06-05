@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
 
-    <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+    <title>Turbo</title>
+
     <link rel="stylesheet" type="text/css" href="/bower_components/inspectorJson/inspector-json.css">
     <link rel="stylesheet" type="text/css" href="/dist/main.css">
 
     <script src="/bower_components/underscore/underscore.js"></script>
     <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/bower_components/inspectorJson/inspector-json.js"></script>
 
     <script src="/dist/namespace.js"></script>
@@ -22,18 +22,19 @@
     <script src="/dist/mock.js"></script>
   </head>
 
-  <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="sidebar col-sm-2">
-          <h1>Turbo</h1>
-          <ul class="nav nav-stacked">
-            <li data-section="bindings"><a href="#">Bindings</a></li>
-            <li data-section="contexts"><a href="#">Contexts</a></li>
-          </ul>
-        </div>
+  <body class="vbox viewport">
+    <section class="main hbox">
+      <ol class="sidebar">
+        <li class="sidebar-item">TURBO</li>
+        <li data-section="bindings" class="sidebar-item">
+          <a href="#">Bindings</a>
+        </li>
+        <li data-section="contexts" class="sidebar-item">
+          <a href="#">Contexts</a>
+        </li>
+      </ol>
 
-        <div class="content col-sm-10"></div>
-      </div>
+      <div class="content"></div>
+    </section>
   </body>
 </html>

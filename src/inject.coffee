@@ -7,7 +7,8 @@ Turbo.injectInspector = (cb) ->
   inspector = $.get(chrome.extension.getURL('dist/inspector.js'))
 
   $.when(underscore, inspector).done (underscoreRes, inspectorRes) ->
-    chrome.devtools.inspectedWindow.eval([underscoreRes[0], inspectorRes[0]].join(';\n'), cb)
+    injected = [underscoreRes[0], inspectorRes[0]].join(';\n')
+    chrome.devtools.inspectedWindow.eval(injected, cb)
 
 $ ->
   Turbo.injectInspector ->
