@@ -10,6 +10,7 @@ extractBindings = (acc, element) ->
       node: nodeName(element.node)
       type: binding.type
       definition: binding.definition
+      value: binding.value
     acc.push(result)
   return acc
 

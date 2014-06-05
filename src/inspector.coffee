@@ -1,17 +1,26 @@
 log = (m...) ->
   console.log(['[inspector]'].concat(m)...)
 
+bindingValue = (type, context, definition) ->
+  key = Bindings._keypathForKey(definition)
+  switch type
+    when 'bind' then Bindings._getValue(context, key)
+    when 'bind-show' then !!Bindings._getValue(context, key)
+    when 'bind-class' then Bindings._getValue(context, key)
+    else null
+
 boundElements = ->
   elements = {}
 
   for element in document.getElementsByTagName("*")
     if (id = element.bindingId) && (definition = Bindings._elements[id])
-      keypath = Bindings._keypathForKey(Bindings.contextKey(element))
+      key = Bindings.contextKey(element)
+      keypath = if key then Bindings._keypathForKey(key) else []
       context = Bindings._getValue(Bindings._rootContext, keypath)
 
       bindings = []
       for type of Bindings.bindingTypes when definition = element.getAttribute(type)
-        bindings.push({type, definition})
+        bindings.push({type, definition, value: bindingValue(type, context, definition)})
 
       continue unless bindings.length
 
