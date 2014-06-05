@@ -23,3 +23,6 @@ class Turbo.Messenger
 
   disconnect: ->
     @port.disconnect()
+
+  onSelectionChange: (cb) ->
+    chrome.devtools.panels.elements.onSelectionChanged.addListener(cb)

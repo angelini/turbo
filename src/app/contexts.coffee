@@ -8,10 +8,7 @@ class Turbo.Contexts extends Turbo.View
 
   constructor: (@$node) ->
     super
-
-    chrome.devtools.panels.elements.onSelectionChanged.addListener =>
-      @fetchCurrent()
-
+    Turbo.App.onSelectionChange => @fetchCurrent()
     @addSubRender('current', @renderCurrent.bind(this))
 
   fetch: ->

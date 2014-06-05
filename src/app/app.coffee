@@ -14,7 +14,10 @@ class Turbo.App
   @log: log
 
   @sendMessage: (msg, cb) ->
-    Turbo.instance.sendMessage(msg, cb)
+    Turbo.instance.messenger.send(msg, cb)
+
+  @onSelectionChange: (cb) ->
+    Turbo.instance.messenger.onSelectionChange(cb)
 
   constructor: (@messenger) ->
     @$sidebar = $('.sidebar')
@@ -36,6 +39,3 @@ class Turbo.App
     switch section
       when 'bindings' then Turbo.Bindings.init(@$content)
       when 'contexts' then Turbo.Contexts.init(@$content)
-
-  sendMessage: (msg, cb) ->
-    @messenger.send(msg, cb)
