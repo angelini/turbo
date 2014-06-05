@@ -1,7 +1,7 @@
 nodeName = (node) ->
   name = node.type
-  name += " ##{node.id}" if (node.id)
-  name += " .#{node.className.split(' ').join('.')}" if (node.className)
+  name += "##{node.id}" if (node.id)
+  name += ".#{node.className.split(' ').join('.')}" if (node.className)
   return name
 
 extractBindings = (acc, element) ->
@@ -39,7 +39,7 @@ class Turbo.Bindings extends Turbo.View
 
   updateFilter: (filter) ->
     @filters[filter] = @$node.find(".js-#{filter}").val()
-    @setSubValue('filtered', applyFilters(@getValue()['bindings'])
+    @setSubValue('filtered', @applyFilters(@getValue()['bindings']))
 
   applyFilters: (bindings) ->
     _.filter bindings, (binding) =>
@@ -48,10 +48,10 @@ class Turbo.Bindings extends Turbo.View
       return true
 
   fetch: ->
-    Turbo.App.sendMessage type: 'bindings', ({count, elements}) =>
+    Turbo.App.sendMessage type: 'bindings', ({elements}) =>
       bindings = _.reduce(elements, extractBindings, [])
-      filtered = applyFilters(bindings)
-      @setValue({count, bindings, filtered})
+      filtered = @applyFilters(bindings)
+      @setValue({bindings, filtered})
 
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))
@@ -69,7 +69,7 @@ TEMPLATES =
       <h1>Bindings</h1>
     </header>
     <div>
-      <div>Binding Count: <%= count %></div>
+      <div>Binding Count: <%= bindings.length %></div>
 
       <table class="table">
         <tr>

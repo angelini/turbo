@@ -10,4 +10,5 @@ Turbo.injectInspector = (cb) ->
     chrome.devtools.inspectedWindow.eval([underscoreRes[0], inspectorRes[0]].join(';\n'), cb)
 
 $ ->
-  Turbo.injectInspector -> Turbo.App.start()
+  Turbo.injectInspector ->
+    Turbo.App.start(Turbo.Messenger.connect())

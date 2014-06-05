@@ -1,9 +1,6 @@
 log = (m...) ->
   console.log(['[inspector]'].concat(m)...)
 
-bindingsCount = ->
-  _.reduce(Bindings._elements, ((count, e) -> count + _.size(e.bindings)), 0)
-
 boundElements = ->
   elements = {}
 
@@ -33,16 +30,16 @@ class TurboInspector
 
   constructor: ->
     window.addEventListener 'message', messageListener = (event) =>
-      if event.data.for is 'turbo.inspector'
-        log('message', event.data)
+      return if event.data.for != 'turbo.inspector'
+      log('message', event.data)
 
-        if (event.data.data.type == 'disconnect')
-          window.removeEventListener(messageListener)
-          return
+      if (event.data.data.type == 'disconnect')
+        window.removeEventListener(messageListener)
+        return
 
-        @handleMessage event.data.data, (res, options = {}) =>
-          data = JSON.stringify(res)
-          window.postMessage({id: event.data.id, for: 'turbo', data, options}, '*')
+      @handleMessage event.data.data, (res, options = {}) =>
+        data = JSON.stringify(res)
+        window.postMessage({id: event.data.id, for: 'turbo', data, options}, '*')
 
   handleMessage: (msg, cb) ->
     switch msg.type
@@ -50,10 +47,7 @@ class TurboInspector
         cb(type: 'pong')
 
       when 'bindings'
-        result =
-          count: bindingsCount()
-          elements: boundElements()
-        cb(result)
+        cb(elements: boundElements())
 
       when 'context'
         cb(context: window.context)

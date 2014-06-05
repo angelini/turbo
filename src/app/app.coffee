@@ -4,8 +4,7 @@ log = (m...)->
 
 class Turbo.App
 
-  @start: ->
-    messenger = Turbo.Messenger.connect()
+  @start: (messenger) ->
     Turbo.instance = new Turbo.App(messenger)
     Turbo.instance.navigate('bindings')
 
