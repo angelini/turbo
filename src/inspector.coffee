@@ -60,9 +60,9 @@ class TurboInspector
       when 'constant-ping'
         interval = setInterval ->
           cb(type: 'pong')
-        , 1000
+        , 2000
 
-        handlers[id] = -> clearInterval(interval)
+        @handlers[id] = -> clearInterval(interval)
 
       when 'bindings'
         cb(elements: boundElements())

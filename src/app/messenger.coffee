@@ -26,7 +26,7 @@ class Turbo.Messenger
     toRemove = []
 
     for id, handler of @handlers
-      if handler.msg == msg
+      if handler.msg.type == msg.type
         if !cb || cb == handler.fn
           delete @handlers[id]
           toRemove.push(id)
