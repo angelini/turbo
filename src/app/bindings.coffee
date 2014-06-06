@@ -67,11 +67,9 @@ class Turbo.Bindings extends Turbo.View
 TEMPLATES =
   root: """
     <header>
-      <h1>Bindings</h1>
+      <h1>Bindings<span class="comment"> - count: <%= bindings.length %></span></h1>
     </header>
     <div>
-      <div>Binding Count: <%= bindings.length %></div>
-
       <table>
         <thead>
           <tr>

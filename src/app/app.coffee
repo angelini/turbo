@@ -35,7 +35,7 @@ class Turbo.App
     $nav.on 'click', (event) =>
       event.preventDefault()
 
-      section = $(event.target).parent().data('section')
+      section = $(event.target).data('section')
       @navigate(section)
 
   navigate: (section) ->
