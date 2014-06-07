@@ -9,23 +9,24 @@
 
     <script src="/bower_components/underscore/underscore.js"></script>
     <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <script src="/bower_components/coffee-script/extras/coffee-script.js"></script>
+
+    <script src="/bower_components/sourcemaps/browser-source-map-support.js"></script>
     <script src="/bower_components/mocha/mocha.js"></script>
     <script src="/bower_components/chai/chai.js"></script>
-    <script src="/bower_components/sinon/lib/sinon.js"></script>
+    <script src="/bower_components/sinon/index.js"></script>
 
-    <script type="text/coffeescript" src="/src/namespace.coffee"></script>
-    <script type="text/coffeescript" src="/src/app/view.coffee"></script>
-    <script type="text/coffeescript" src="/src/app/messenger.coffee"></script>
-    <script type="text/coffeescript" src="/src/app/bindings.coffee"></script>
-    <script type="text/coffeescript" src="/src/app/contexts.coffee"></script>
-    <script type="text/coffeescript" src="/src/app/app.coffee"></script>
+    <script src="/dist/namespace.js"></script>
+    <script src="/dist/app/view.js"></script>
+    <script src="/dist/app/messenger.js"></script>
+    <script src="/dist/app/bindings.js"></script>
+    <script src="/dist/app/contexts.js"></script>
+    <script src="/dist/app/app.js"></script>
 
     <script>mocha.setup('tdd')</script>
-    <script type="text/coffeescript" src="/tests/app/messenger-test.coffee"></script>
+    <script src="/dist/tests/app/messenger-test.js"></script>
   </head>
   <body>
     <div id="mocha"></div>
-    <script type="text/coffeescript" src="/tests/init.coffee"></script>
+    <script src="/dist/tests/helper.js"></script>
   </body>
 </html>

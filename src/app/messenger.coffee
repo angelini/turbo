@@ -34,7 +34,7 @@ class Turbo.Messenger
     @send({type: 'off', ids: toRemove})
 
   _send: (msg, cb, keepAlive) ->
-    id = @messageId++
+    id = ++@messageId
     @handlers[id] = {msg, keepAlive, fn: cb || ->}
     @port.postMessage(data: msg, id: id)
 

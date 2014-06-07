@@ -17,9 +17,12 @@
   "dependencies": {
     "jquery": "2.1.*",
     "underscore": "1.6.*",
-    "inspectorJson": "git@github.com:SparkartGroupInc/Inspector-JSON.git",
+    "inspectorJson": "git@github.com:SparkartGroupInc/Inspector-JSON.git"
+  },
+  "devDependencies": {
     "mocha": "~1.20.1",
     "chai": "~1.9.1",
-    "coffee-script": "git@github.com:jashkenas/coffeescript.git"
+    "sinon": "http://sinonjs.org/releases/sinon-1.10.2.js",
+    "sourcemaps": "git@github.com:evanw/node-source-map-support.git"
   }
 }
