@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Test Runner</title>
+
+    <link rel="stylesheet" media="all" href="/bower_components/mocha/mocha.css">
+
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/coffee-script/extras/coffee-script.js"></script>
+    <script src="/bower_components/mocha/mocha.js"></script>
+    <script src="/bower_components/chai/chai.js"></script>
+    <script src="/bower_components/sinon/lib/sinon.js"></script>
+
+    <script type="text/coffeescript" src="/src/namespace.coffee"></script>
+    <script type="text/coffeescript" src="/src/app/view.coffee"></script>
+    <script type="text/coffeescript" src="/src/app/messenger.coffee"></script>
+    <script type="text/coffeescript" src="/src/app/bindings.coffee"></script>
+    <script type="text/coffeescript" src="/src/app/contexts.coffee"></script>
+    <script type="text/coffeescript" src="/src/app/app.coffee"></script>
+
+    <script>mocha.setup('tdd')</script>
+    <script type="text/coffeescript" src="/tests/app/messenger-test.coffee"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="text/coffeescript" src="/tests/init.coffee"></script>
+  </body>
+</html>
