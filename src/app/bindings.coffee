@@ -4,13 +4,14 @@ nodeName = (node) ->
   name += ".#{node.className.split(' ').join('.')}" if (node.className)
   return name
 
-extractBindings = (acc, element) ->
+extractBindings = (acc, element, id) ->
   for binding in element.bindings
     result =
+      id: id
       node: nodeName(element.node)
       type: binding.type
       definition: binding.definition
-      value: binding.value
+      values: [binding.value]
     acc.push(result)
   return acc
 
@@ -26,6 +27,10 @@ class Turbo.Bindings extends Turbo.View
     instance = new Turbo.Bindings($content)
     instance.fetch()
 
+  @die: ->
+    Turbo.App.log('bindings:die')
+    Turbo.App.off {type: 'binding-values'}
+
   constructor: (@$node) ->
     super
     @filters = {}
@@ -39,21 +44,37 @@ class Turbo.Bindings extends Turbo.View
 
   updateFilter: (filter) ->
     @filters[filter] = @$node.find(".js-#{filter}").val()
-    @setSubValue('filtered', @applyFilters(@getValue()['bindings']))
+    @setSubValue('filtered', @applyFilters(@getValue().bindings))
 
   applyFilters: (bindings) ->
     _.filter bindings, (binding) =>
       return false if !testFilter(@filters.node, binding.node)
       return false if !testFilter(@filters.type, binding.type)
       return false if !testFilter(@filters.definition, binding.definition)
-      return false if !testFilter(@filters.value, binding.value)
+      return false if !testFilter(@filters.value, _.first(binding.values))
       return true
 
   fetch: ->
     Turbo.App.sendMessage type: 'bindings', ({elements}) =>
+      @subscribeToValues(_.keys(elements))
+
       bindings = _.reduce(elements, extractBindings, [])
       filtered = @applyFilters(bindings)
       @setValue({bindings, filtered})
+
+  subscribeToValues: (ids) ->
+    Turbo.App.on {type: 'binding-values', ids}, (id, bindings) =>
+      state = @getValue()
+
+      for binding in bindings
+        old = _.find state.bindings, (oldBinding) ->
+          oldBinding.id == id + "" &&
+          oldBinding.type == binding.type &&
+          oldBinding.definition == binding.definition
+
+        old.values.unshift(binding.value)
+
+      @setSubValue('filtered', @applyFilters(state.bindings))
 
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))
@@ -98,7 +119,7 @@ TEMPLATES =
         <td><%= binding.node %></td>
         <td><%= binding.type %></td>
         <td><%= binding.definition %></td>
-        <td><%= binding.value %></td>
+        <td><%= _.first(binding.values) %></td>
       </tr>
     <% }) %>
   """

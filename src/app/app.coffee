@@ -39,9 +39,16 @@ class Turbo.App
       @navigate(section)
 
   navigate: (section) ->
-    @$sidebar.find('li.selected').removeClass('selected')
+    $previous = @$sidebar.find('li.selected')
+    $previous.removeClass('selected')
+    @killPreviousSection($previous.data('section'))
+
     @$sidebar.find("li[data-section=\"#{section}\"]").addClass('selected')
 
     switch section
       when 'bindings' then Turbo.Bindings.init(@$content)
       when 'contexts' then Turbo.Contexts.init(@$content)
+
+  killPreviousSection: (section) ->
+    switch section
+      when 'bindings' then Turbo.Bindings.die()

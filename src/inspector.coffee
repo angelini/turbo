@@ -9,19 +9,23 @@ bindingValue = (type, context, definition) ->
     when 'bind-class' then Bindings._getValue(context, key)
     else null
 
+extractElementBindings = (element) ->
+  key = Bindings.contextKey(element)
+  keypath = if key then Bindings._keypathForKey(key) else []
+  context = Bindings._getValue(Bindings._rootContext, keypath)
+
+  bindings = []
+  for type of Bindings.bindingTypes when definition = element.getAttribute(type)
+    bindings.push({type, definition, value: bindingValue(type, context, definition)})
+
+  return bindings
+
 boundElements = ->
   elements = {}
 
   for element in document.getElementsByTagName("*")
     if (id = element.bindingId) && (definition = Bindings._elements[id])
-      key = Bindings.contextKey(element)
-      keypath = if key then Bindings._keypathForKey(key) else []
-      context = Bindings._getValue(Bindings._rootContext, keypath)
-
-      bindings = []
-      for type of Bindings.bindingTypes when definition = element.getAttribute(type)
-        bindings.push({type, definition, value: bindingValue(type, context, definition)})
-
+      bindings = extractElementBindings(element)
       continue unless bindings.length
 
       elements[id] =
@@ -57,15 +61,11 @@ class TurboInspector
       when 'ping'
         cb(type: 'pong')
 
-      when 'constant-ping'
-        interval = setInterval ->
-          cb(type: 'pong')
-        , 2000
-
-        @handlers[id] = -> clearInterval(interval)
-
       when 'bindings'
         cb(elements: boundElements())
+
+      when 'bindings-values'
+        @handlers[id] = @listenForChanges(msg.ids, cb)
 
       when 'context'
         cb(context: window.context)
@@ -83,5 +83,20 @@ class TurboInspector
 
       else
         log('Unknown message', msg)
+
+  listenForChanges: (ids, cb) ->
+    changeHandlers = {}
+
+    for id in ids
+      element = Bindings._elements[id]
+      changeHandlers[id] = ->
+        cb(id, extractElementBindings(element))
+
+      $(element).on('bindings:change', changeHandlers[id])
+
+    return ->
+      for id in ids
+        element = Bindings._elements[id]
+        $(element).off('bindings:change', changeHandlers[id])
 
 window.inspector = new TurboInspector()
