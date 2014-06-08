@@ -9,7 +9,7 @@ class Turbo.MockMessenger
   on: (msg, cb) ->
     @interval = setInterval ->
       cb(1, [{type: 'bind', definition: 'foo', value: 'bar' + Math.random()}])
-    , 5000
+    , 8000
 
   off: (msg, cb) ->
     clearInterval(@interval)

@@ -71,13 +71,21 @@ html, body, .viewport {
   padding: 0px 15px;
 }
 
-h1 {
+h1, h2 {
   color: rgb(110, 116, 128);
-  font-size: 16px;
-  line-height: 20px;
   font-weight: normal;
   margin-top: 0;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
+}
+
+h1 {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+h2 {
+  font-size: 13px;
+  line-height: 18px;
 }
 
 header {
@@ -116,4 +124,12 @@ header {
   color: $gray;
   font-style: italic;
   font-size: 14px;
+}
+
+.block {
+  border: 1px solid $gray;
+  background-color: white;
+  border-radius: 2px;
+  margin: 0 8px 8px 8px;
+  padding: 5px;
 }

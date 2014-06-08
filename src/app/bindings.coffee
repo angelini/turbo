@@ -6,13 +6,13 @@ nodeName = (node) ->
 
 extractBindings = (acc, element, id) ->
   for binding in element.bindings
-    result =
+    acc.push
       id: parseInt(id, 10)
+      index: acc.length
       node: nodeName(element.node)
       type: binding.type
       definition: binding.definition
       values: [binding.value]
-    acc.push(result)
   return acc
 
 testFilter = (filter, val) ->
@@ -63,7 +63,7 @@ class Turbo.Bindings extends Turbo.View
 
   subscribeToValues: (ids) ->
     Turbo.App.on {type: 'binding-values', ids}, (id, bindings) =>
-      list = @getValue().list
+      list = @getValue('list')
 
       for binding in bindings
         old = _.find list.bindings, (oldBinding) ->
@@ -78,14 +78,16 @@ class Turbo.Bindings extends Turbo.View
 
   updateFilter: (filter) ->
     @filters[filter] = @$node.find(".js-#{filter}").val()
-    @setValue('list', filtered: @applyFilters(@getValue().bindings))
+    @setValue('list', filtered: @applyFilters(@getValue().list.bindings))
 
   selectRow: (event) ->
     $rows = @$node.find('.body li')
     $row = $(event.target).parent('li')
+    list = @getValue('list')
 
-    index = $rows.index($row)
-    values = @getValue().list.filtered[index].values
+    filteredIndex = $rows.index($row)
+    index = list.bindings.indexOf(list.filtered[filteredIndex])
+    values = list.bindings[index].values
     @setValue('list', 'selected', {index, values})
 
   render: (data) ->
@@ -98,8 +100,8 @@ class Turbo.Bindings extends Turbo.View
   renderSelected: (selected) ->
     @$node.find('.js-history-row').remove()
 
-    $row = @$node.find(".table .body li:nth-child(#{selected.index + 1})")
-    $row.append(_.template(TEMPLATES.history, values: selected.values))
+    $row = @$node.find(".js-index-#{selected.index}")
+    $row.append(_.template(TEMPLATES.history, values: selected.values)) if $row
 
 
 TEMPLATES =
@@ -122,7 +124,7 @@ TEMPLATES =
 
   list: """
     <% _.each(bindings, function(binding) { %>
-      <li class="hbox js-binding-row wrap">
+      <li class="hbox wrap js-binding-row js-index-<%= binding.index %>">
         <div class="col"><%= binding.node %></div>
         <div class="col"><%= binding.type %></div>
         <div class="col"><%= binding.definition %></div>
@@ -132,7 +134,8 @@ TEMPLATES =
   """
 
   history: """
-    <div class="full js-history-row">
+    <div class="full block vbox js-history-row">
+      <h2>History</h2>
       <% _.each(values, function(value) { %>
         <div><%= value %></div>
       <% }) %>
