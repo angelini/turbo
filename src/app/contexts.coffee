@@ -9,7 +9,7 @@ class Turbo.Contexts extends Turbo.View
   constructor: (@$node) ->
     super
     Turbo.App.onSelectionChange => @fetchCurrent()
-    @addSubRender('current', @renderCurrent.bind(this))
+    @addRenderHook('current', @renderCurrent.bind(this))
 
   fetch: ->
     Turbo.App.sendMessage type: 'context', ({context}) =>
@@ -17,7 +17,7 @@ class Turbo.Contexts extends Turbo.View
 
   fetchCurrent: ->
     Turbo.App.sendMessage type: 'current-context', ({context, keypath}) =>
-      @setSubValue('current', {context, keypath})
+      @setValue('current', {context, keypath})
 
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))

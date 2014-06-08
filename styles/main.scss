@@ -26,8 +26,16 @@ html, body, .viewport {
   flex-direction: column;
 }
 
+.wrap {
+  flex-wrap: wrap;
+}
+
 .main {
   flex: 1;
+}
+
+.full {
+  width: 100%;
 }
 
 .sidebar {
@@ -73,26 +81,34 @@ h1 {
 }
 
 header {
-  margin-top: 7px;
+  margin: 12px 0;
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
 
-  th input {
+  input {
     outline: 0;
     font-size: 16px;
     border: 0;
+    flex: 1;
   }
 
-  td, th {
-    padding: 0.5rem;
-    text-align: left;
+  .body {
+    padding: 0;
+    margin: 10px 0;
+    list-style: none;
+
+    .col {
+      padding: 0.5rem;
+      text-align: left;
+      flex: 1;
+    }
   }
 }
 
-tbody.striped tr:nth-child(odd) {
+.striped li:nth-child(odd) {
    background-color: $light-gray;
 }
 

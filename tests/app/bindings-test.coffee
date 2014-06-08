@@ -39,9 +39,9 @@ suite 'Turbo.Bindings', ->
     ]
     @stub(Turbo.App, 'on').callsArgWith(1, 2, newBindings)
 
-    @view._value = {bindings: @bindings, filtered: @bindings}
+    @view._value = list: {bindings: @bindings, filtered: @bindings}
     @view.subscribeToValues([1,2,3])
 
     state = @view.getValue()
-    assert.deepEqual ['new', 'test'], state.bindings[1].values
-    assert.deepEqual ['true'], state.bindings[2].values
+    assert.deepEqual ['new', 'test'], state.list.bindings[1].values
+    assert.deepEqual ['true'], state.list.bindings[2].values

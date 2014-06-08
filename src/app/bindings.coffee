@@ -35,16 +35,15 @@ class Turbo.Bindings extends Turbo.View
     super
     @filters = {}
 
+    @$node.on 'click', '.js-binding-row', @selectRow.bind(this)
+
     @$node.on 'keyup', '.js-node', @updateFilter.bind(this, 'node')
     @$node.on 'keyup', '.js-type', @updateFilter.bind(this, 'type')
     @$node.on 'keyup', '.js-definition', @updateFilter.bind(this, 'definition')
     @$node.on 'keyup', '.js-value', @updateFilter.bind(this, 'value')
 
-    @addSubRender('filtered', @renderList.bind(this))
-
-  updateFilter: (filter) ->
-    @filters[filter] = @$node.find(".js-#{filter}").val()
-    @setSubValue('filtered', @applyFilters(@getValue().bindings))
+    @addRenderHook('list', @renderList.bind(this))
+    @addRenderHook('list', 'selected', @renderSelected.bind(this))
 
   applyFilters: (bindings) ->
     _.filter bindings, (binding) =>
@@ -60,14 +59,14 @@ class Turbo.Bindings extends Turbo.View
 
       bindings = _.reduce(elements, extractBindings, [])
       filtered = @applyFilters(bindings)
-      @setValue({bindings, filtered})
+      @setValue(list: {bindings, filtered})
 
   subscribeToValues: (ids) ->
     Turbo.App.on {type: 'binding-values', ids}, (id, bindings) =>
-      state = @getValue()
+      list = @getValue().list
 
       for binding in bindings
-        old = _.find state.bindings, (oldBinding) ->
+        old = _.find list.bindings, (oldBinding) ->
           oldBinding.id == id &&
           oldBinding.type == binding.type &&
           oldBinding.definition == binding.definition
@@ -75,52 +74,67 @@ class Turbo.Bindings extends Turbo.View
         if old && !_.isEqual(binding.value, _.first(old.values))
           old.values.unshift(binding.value)
 
-      @setSubValue('filtered', @applyFilters(state.bindings))
+      @setValue('list', filtered: @applyFilters(list.bindings))
+
+  updateFilter: (filter) ->
+    @filters[filter] = @$node.find(".js-#{filter}").val()
+    @setValue('list', filtered: @applyFilters(@getValue().bindings))
+
+  selectRow: (event) ->
+    $rows = @$node.find('.body li')
+    $row = $(event.target).parent('li')
+
+    index = $rows.index($row)
+    values = @getValue().list.filtered[index].values
+    @setValue('list', 'selected', {index, values})
 
   render: (data) ->
     @$node.html(_.template(TEMPLATES.root, data))
-    @renderList(data.filtered)
 
-  renderList: (filtered) ->
-    $tbody = @$node.find('tbody')
-    $tbody.html(_.template(TEMPLATES.list, bindings: filtered))
+  renderList: (list) ->
+    $tbody = @$node.find('.table .body')
+    $tbody.html(_.template(TEMPLATES.list, bindings: list.filtered))
+
+  renderSelected: (selected) ->
+    @$node.find('.js-history-row').remove()
+
+    $row = @$node.find(".table .body li:nth-child(#{selected.index + 1})")
+    $row.append(_.template(TEMPLATES.history, values: selected.values))
 
 
 TEMPLATES =
   root: """
     <header>
-      <h1>Bindings<span class="comment"> - count: <%= bindings.length %></span></h1>
+      <h1>Bindings<span class="comment"> - count: <%= list.bindings.length %></span></h1>
     </header>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>
-              <input class="js-node" type="text" placeholder="Node">
-            </th>
-            <th>
-              <input class="js-type" type="text" placeholder="Type">
-            </th>
-            <th>
-              <input class="js-definition" type="text" placeholder="Definition">
-            </th>
-            <th>
-              <input class="js-value" type="text" placeholder="Value">
-            </th>
-          </tr>
-        </thead>
-        <tbody class="striped"></tbody>
-      </table>
+    <div class="table vbox">
+      <div class="header">
+        <div class="hbox">
+          <input class="js-node" type="text" placeholder="Node">
+          <input class="js-type" type="text" placeholder="Type">
+          <input class="js-definition" type="text" placeholder="Definition">
+          <input class="js-value" type="text" placeholder="Value">
+        </div>
+      </div>
+      <ul class="striped body"></ul>
     </div>
   """
 
   list: """
     <% _.each(bindings, function(binding) { %>
-      <tr>
-        <td><%= binding.node %></td>
-        <td><%= binding.type %></td>
-        <td><%= binding.definition %></td>
-        <td><%= _.first(binding.values) %></td>
-      </tr>
+      <li class="hbox js-binding-row wrap">
+        <div class="col"><%= binding.node %></div>
+        <div class="col"><%= binding.type %></div>
+        <div class="col"><%= binding.definition %></div>
+        <div class="col"><%= _.first(binding.values) %></div>
+      </li>
     <% }) %>
+  """
+
+  history: """
+    <div class="full js-history-row">
+      <% _.each(values, function(value) { %>
+        <div><%= value %></div>
+      <% }) %>
+    </tr>
   """
