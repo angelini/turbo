@@ -24,7 +24,7 @@ task 'build', 'compile the extension', ->
   coffeeCompile('./dist/tests', './tests', false)
   sassCompile('./dist', './styles', false)
 
-task 'watch', 'watches and compiles coffee', ->
+task 'watch', 'watches and compiles the extension', ->
   coffeeCompile('./dist', './src', true)
   coffeeCompile('./dist/tests', './tests', true)
   sassCompile('./dist', './styles', true)
