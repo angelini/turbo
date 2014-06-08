@@ -7,7 +7,7 @@ nodeName = (node) ->
 extractBindings = (acc, element, id) ->
   for binding in element.bindings
     result =
-      id: id
+      id: parseInt(id, 10)
       node: nodeName(element.node)
       type: binding.type
       definition: binding.definition
@@ -17,7 +17,7 @@ extractBindings = (acc, element, id) ->
 
 testFilter = (filter, val) ->
   return true if !filter
-  val.indexOf(filter) >= 0
+  val?.indexOf(filter) >= 0
 
 
 class Turbo.Bindings extends Turbo.View
@@ -68,11 +68,12 @@ class Turbo.Bindings extends Turbo.View
 
       for binding in bindings
         old = _.find state.bindings, (oldBinding) ->
-          oldBinding.id == id + "" &&
+          oldBinding.id == id &&
           oldBinding.type == binding.type &&
           oldBinding.definition == binding.definition
 
-        old.values.unshift(binding.value)
+        if old && !_.isEqual(binding.value, _.first(old.values))
+          old.values.unshift(binding.value)
 
       @setSubValue('filtered', @applyFilters(state.bindings))
 

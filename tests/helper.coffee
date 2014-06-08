@@ -14,6 +14,7 @@ setup ->
 
 teardown ->
   sandbox.verifyAndRestore()
+  $('#fixtures').empty()
 
 mocha.checkLeaks();
 mocha.globals(['jQuery', '_', 'chai', 'sinon', 'CoffeeScript', 'Turbo']);
