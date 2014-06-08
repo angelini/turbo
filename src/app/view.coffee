@@ -6,7 +6,9 @@ class Turbo.View
 
   getValue: (keys...) ->
     result = @_value
-    result = result[key] for key in keys when result?
+    for key in keys
+      result[key] ||= {}
+      result = result[key]
     result
 
   setValue: (keys..., value) ->
@@ -38,15 +40,14 @@ class Turbo.View
       hook._fns.push(fn)
 
   callRenderHooks: (keys...) ->
-    console.log('keys', keys)
     value = @getValue(keys...)
     hook = @getRenderHook(keys...)
 
-    fn(value) for fn in hook._fns
+    fn(value) for fn in hook._fns if _.size(value)
 
     for key of hook
       if key != '_fns'
-        @callRenderHooks(keys.concat(key))
+        @callRenderHooks(keys.concat(key)...)
 
     return
 
